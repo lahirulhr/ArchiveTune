@@ -104,6 +104,7 @@ import moe.rukamori.archivetune.constants.AudioQualityKey
 import moe.rukamori.archivetune.constants.AutoLoadMoreKey
 import moe.rukamori.archivetune.constants.AutoDownloadOnLikeKey
 import moe.rukamori.archivetune.constants.AutoSkipNextOnErrorKey
+import moe.rukamori.archivetune.constants.AutoPlayOnRestartKey
 import moe.rukamori.archivetune.constants.AutoStartOnBluetoothKey
 import moe.rukamori.archivetune.constants.InnerTubeCookieKey
 import moe.rukamori.archivetune.constants.DiscordTokenKey
@@ -368,6 +369,7 @@ class MusicService :
     private var restoredQueueBackfillJob: Job? = null
     @Volatile
     private var suppressAutoPlayback = false
+    private var autoPlayOnBindConsumed = false
     private var lastPresenceToken: String? = null
     @Volatile
     private var lastPresenceUpdateTime = 0L
@@ -1117,6 +1119,14 @@ class MusicService :
                         }
                     } finally {
                         isRestoringPersistentState = false
+                    }
+
+                    if (restoredQueue && dataStore.get(AutoPlayOnRestartKey, false)) {
+                        withContext(Dispatchers.Main) {
+                            if (player.mediaItemCount > 0) {
+                                player.playWhenReady = true
+                            }
+                        }
                     }
                 }
             }.onFailure { error ->
@@ -6121,6 +6131,21 @@ private fun onMediaItemTransitionInternal() {
             scope.launch {
                 delay(50)
                 updateNotification()
+            }
+        }
+        if (!autoPlayOnBindConsumed) {
+            autoPlayOnBindConsumed = true
+            scope.launch(Dispatchers.IO) {
+                queueRestoreCompleted.first { it }
+                if (!dataStore.get(AutoPlayOnRestartKey, false)) return@launch
+                withContext(Dispatchers.Main) {
+                    if (player.mediaItemCount > 0 && !player.isPlaying &&
+                        player.playbackState != Player.STATE_IDLE &&
+                        player.playbackState != Player.STATE_ENDED
+                    ) {
+                        player.playWhenReady = true
+                    }
+                }
             }
         }
         return result

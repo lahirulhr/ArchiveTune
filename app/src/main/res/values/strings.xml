@@ -508,6 +508,8 @@
     <string name="queue">Queue</string>
     <string name="persistent_queue">Persistent queue</string>
     <string name="persistent_queue_desc">Restore your last queue when the app starts</string>
+    <string name="auto_play_on_restart">Auto-play on app start</string>
+    <string name="auto_play_on_restart_desc">Automatically resume the last played song when the app reopens</string>
     <string name="permanent_shuffle">Permanent shuffle mode</string>
     <string name="permanent_shuffle_desc">Keep shuffle enabled when you start a new song</string>
     <string name="auto_load_more">Auto load more songs</string>

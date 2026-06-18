@@ -39,6 +39,7 @@ import moe.rukamori.archivetune.constants.AudioQuality
 import moe.rukamori.archivetune.constants.AudioQualityKey
 import moe.rukamori.archivetune.constants.LowDataModeKey
 import moe.rukamori.archivetune.constants.AutoDownloadOnLikeKey
+import moe.rukamori.archivetune.constants.AutoPlayOnRestartKey
 import moe.rukamori.archivetune.constants.AutoStartOnBluetoothKey
 import moe.rukamori.archivetune.constants.AutoSkipNextOnErrorKey
 import moe.rukamori.archivetune.constants.PauseOnDeviceMuteKey
@@ -92,6 +93,10 @@ fun PlayerSettings(
     val (persistentQueue, onPersistentQueueChange) = rememberPreference(
         PersistentQueueKey,
         defaultValue = true
+    )
+    val (autoPlayOnRestart, onAutoPlayOnRestartChange) = rememberPreference(
+        AutoPlayOnRestartKey,
+        defaultValue = false
     )
     val (permanentShuffle, onPermanentShuffleChange) = rememberPreference(
         PermanentShuffleKey,
@@ -397,6 +402,17 @@ fun PlayerSettings(
                     icon = { Icon(painterResource(R.drawable.queue_music), null) },
                     checked = persistentQueue,
                     onCheckedChange = onPersistentQueueChange
+                )
+            }
+
+            item {
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.auto_play_on_restart)) },
+                    description = stringResource(R.string.auto_play_on_restart_desc),
+                    icon = { Icon(painterResource(R.drawable.play), null) },
+                    checked = autoPlayOnRestart,
+                    isEnabled = persistentQueue,
+                    onCheckedChange = onAutoPlayOnRestartChange
                 )
             }
 
