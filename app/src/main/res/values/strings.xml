@@ -279,6 +279,8 @@
     <string name="random_theme_on_startup_desc">Apply a random color palette every time the app starts</string>
     <string name="use_system_font">Use system font</string>
     <string name="use_system_font_desc">Use the device font instead of the app font</string>
+    <string name="ui_scale">UI scale</string>
+    <string name="ui_scale_value">%1$d%%</string>
     <!-- Color Palette -->
     <string name="color_palette">Color Palette</string>
     <string name="customize_theme_colors">Choose your app theme colors</string>

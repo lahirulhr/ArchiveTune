@@ -100,6 +100,7 @@ import moe.rukamori.archivetune.constants.HidePlayerThumbnailKey
 import moe.rukamori.archivetune.constants.ArchiveTuneCanvasKey
 import moe.rukamori.archivetune.constants.ThumbnailCornerRadiusKey
 import moe.rukamori.archivetune.constants.CropThumbnailToSquareKey
+import moe.rukamori.archivetune.constants.UiScaleKey
 import moe.rukamori.archivetune.constants.DisableBlurKey
 import moe.rukamori.archivetune.constants.BlurRadiusKey
 import moe.rukamori.archivetune.ui.component.DefaultDialog
@@ -178,6 +179,7 @@ fun AppearanceSettings(
         defaultValue = true,
     )
     val (blurRadius, onBlurRadiusChange) = rememberPreference(BlurRadiusKey, defaultValue = 48f)
+    val (uiScale, onUiScaleChange) = rememberPreference(UiScaleKey, defaultValue = 1.0f)
     val (useSystemFont, onUseSystemFontChange) = rememberPreference(UseSystemFontKey, defaultValue = false)
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(
         DefaultOpenTabKey,
@@ -421,6 +423,24 @@ fun AppearanceSettings(
                     icon = { Icon(painterResource(R.drawable.text_fields), null) },
                     checked = useSystemFont,
                     onCheckedChange = onUseSystemFontChange,
+                )
+            }
+
+            item {
+                PreferenceEntry(
+                    title = { Text(stringResource(R.string.ui_scale)) },
+                    description = stringResource(R.string.ui_scale_value, (uiScale * 100).roundToInt()),
+                    icon = { Icon(painterResource(R.drawable.screenshot), null) },
+                    content = {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Slider(
+                            value = uiScale,
+                            onValueChange = onUiScaleChange,
+                            valueRange = 0.85f..1.5f,
+                            steps = 12,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 )
             }
         }
