@@ -129,6 +129,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -200,6 +201,7 @@ import moe.rukamori.archivetune.constants.SYSTEM_DEFAULT
 import moe.rukamori.archivetune.constants.SearchSource
 import moe.rukamori.archivetune.constants.SearchSourceKey
 import moe.rukamori.archivetune.constants.StopMusicOnTaskClearKey
+import moe.rukamori.archivetune.constants.UiScaleKey
 import moe.rukamori.archivetune.constants.UseSystemFontKey
 import moe.rukamori.archivetune.db.MusicDatabase
 import moe.rukamori.archivetune.db.entities.SearchHistory
@@ -620,6 +622,7 @@ class MainActivity : ComponentActivity() {
                 }
             val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
             val pureBlack = pureBlackEnabled && useDarkTheme
+            val uiScale by rememberPreference(UiScaleKey, defaultValue = 1.0f)
 
             val customThemeSeedPalette = remember(customThemeColorValue) {
                 if (customThemeColorValue.startsWith("#")) {
@@ -694,6 +697,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            val systemDensity = LocalDensity.current
+            val scaledDensity = remember(uiScale, systemDensity) {
+                Density(density = systemDensity.density * uiScale, fontScale = systemDensity.fontScale)
+            }
+            CompositionLocalProvider(LocalDensity provides scaledDensity) {
             ArchiveTuneTheme(
                 darkTheme = useDarkTheme,
                 pureBlack = pureBlack,
@@ -2002,6 +2010,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+            } // CompositionLocalProvider (scaled density)
         }
     }
 
